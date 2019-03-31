@@ -5,7 +5,9 @@
 先安装树莓派3B+的SPI接口支持库
 ------------------------------
 事前update树莓派的库
+
 >sudo apt-get update && sudo apt-get upgrade
+
 这里的支持库分别是“Py-spidev”和“SPI-Py”，安装“Py-spidev”可以使用命令来安装：
 
 >sudo apt-get install python-spidev
