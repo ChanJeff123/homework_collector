@@ -10,6 +10,7 @@ sudo apt-get install python-spidev python3-spidev
 
 这样“Py-spidev”就可以同时支持Python 2和Python 3了。虽然使用“py-spidev”可以驱动Python中的SPI接口，但是项目中我们使用了“SPI-Py”，可以通过以下命令来完成安装“SPI-Py”:
 
+
 cd ~
 
 git clone https://github.com/lthiery/SPI-Py.git
@@ -22,3 +23,6 @@ sudo python3 setup.py install
 
 同样的“SPI-Py”也可以同时支持Python2和Python3了。
 
+接线图
+----
+[raspi]:https://cdn.raspberrytips.nl/wp-content/uploads/2016/08/RFID-RC522-raspberry-pi-3-600x301.png
