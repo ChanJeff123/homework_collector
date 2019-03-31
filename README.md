@@ -25,4 +25,4 @@ sudo python3 setup.py install
 
 接线图
 ----
-[raspi]:https://cdn.raspberrytips.nl/wp-content/uploads/2016/08/RFID-RC522-raspberry-pi-3-600x301.png
+![raspi](https://cdn.raspberrytips.nl/wp-content/uploads/2016/08/RFID-RC522-raspberry-pi-3-600x301.png)
