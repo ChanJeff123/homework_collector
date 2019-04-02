@@ -28,7 +28,7 @@
 
 实现过程
 ----
->got clone https://github.com/ChanJeff123/homework_collector.git
+>git clone https://github.com/ChanJeff123/homework_collector.git
 
 代码下载后放在同一个目录下不然需要改import路径  
 对每个芯片卡写处理:
