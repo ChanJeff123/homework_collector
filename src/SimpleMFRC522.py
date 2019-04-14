@@ -87,7 +87,11 @@ class SimpleMFRC522:
       return id, text[0:(len(self.BLOCK_ADDRS) * 16)]
       
   def uid_to_num(self, uid):
-      n = 0
-      for i in range(0, 5):
-          n = n * 256 + uid[i]
-      return n
+        s = ''
+        for i in range(0, 4):
+            s = s + ('%02x' % uid[i])
+        return s
+        # n = 0
+        # for i in range(0, 4):
+        #     n = n * 256 + uid[i]
+        # return hex(n)
