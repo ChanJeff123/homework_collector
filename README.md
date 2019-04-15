@@ -36,3 +36,6 @@
 
 读一下试试，结果是写入的数字
 >sudo python ezRead.py
+
+运行图形界面
+>python test.py
