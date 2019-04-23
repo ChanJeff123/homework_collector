@@ -7,7 +7,7 @@ import csv
 import sqlite3
 import random
 import time
-
+import thread
 
 
 '''
@@ -32,6 +32,7 @@ import time
 mylist = None
 stdnt_list = []
 index_stdnt = -1
+collecting = False#当前是否在收作业
 
 def readRfid():
     import RPi.GPIO as GPIO
@@ -118,6 +119,12 @@ def showStdnt():
     Tkinter.Button(win, text="添加rfid卡", width=20, command=addRfid, bg="blue").pack()
     win.mainloop()
 
+def collectHomework_t():
+    global collecting
+    if collecting == False:
+        collecting = True
+        thread.start_new_thread(collectHomework, ())
+
 def collectHomework():
     date = time.strftime("%Y-%m-%d", time.localtime())
     # 到数据库中查找，如果有这个卡，则记录一条作业
@@ -128,22 +135,29 @@ def collectHomework():
         c.execute("INSERT INTO homework_date (date) VALUES ('%s')" % date);
     finally:
         # SELECT 操作
-        rfid = readRfid()
-        cursor = c.execute("SELECT stdnt_id FROM stdnt_rfid WHERE stdnt_rfid = '%s'" % rfid)
-        a = cursor.fetchall()
-        if len(a) > 0:
-            print a[0][0]
-            try:
-                tmp1 = c.execute("SELECT * FROM stdnt_homework")
-                tmp2 = tmp1.fetchall()
-                tmp3 = len(tmp2)
-                c.execute("INSERT INTO stdnt_homework (id,date,stdnt_rfid) VALUES (%d,'%s','%s')" % (int(tmp3+1), date, rfid) );
-                conn.commit()
-            finally:
-                pass
-        else:
-            print "未录入的rfid"
+        while collecting == True:
+            rfid = readRfid()
+            cursor = c.execute("SELECT stdnt_id FROM stdnt_rfid WHERE stdnt_rfid = '%s'" % rfid)
+            a = cursor.fetchall()
+            if len(a) > 0:
+                print a[0][0]
+                try:
+                    tmp1 = c.execute("SELECT * FROM stdnt_homework")
+                    tmp2 = tmp1.fetchall()
+                    tmp3 = len(tmp2)
+                    c.execute("INSERT INTO stdnt_homework (id,date,stdnt_rfid) VALUES (%d,'%s','%s')" % (int(tmp3+1), date, rfid) );
+                    conn.commit()
+                finally:
+                    pass
+            else:
+                print "未录入的rfid"
+            print "collecting..."
+            time.sleep(1)
         conn.close()
+
+def stopCollect():
+    global collecting
+    collecting = False
 
 def addHomework(*args):
     global mylist
@@ -304,12 +318,13 @@ if __name__ == '__main__':
     root.title("作业系统")
     Tkinter.Label(root, text='作业系统', fg='red').pack()
     # 添加学生，添加作业，开始收作业，
-    Tkinter.Button(root, text="创建表", width=20, command=createTable, bg="blue").pack()
-    Tkinter.Button(root, text="删除表", width=20, command=deleteTable, bg="blue").pack()
-    Tkinter.Button(root, text="清空表", width=20, command=deleteData, bg="blue").pack()
-    Tkinter.Button(root, text="添加学生", width=20, command=addStdnt, bg="blue").pack()
-    Tkinter.Button(root, text="学生列表", width=20, command=showStdnt, bg="green").pack()
-    Tkinter.Button(root, text="收作业", width=20, command=collectHomework, bg="red").pack()
+    Tkinter.Button(root, text="创建表", width=20, command=createTable, bg="#a0a0ff").pack()
+    Tkinter.Button(root, text="删除表", width=20, command=deleteTable, bg="#a0a0ff").pack()
+    Tkinter.Button(root, text="清空表", width=20, command=deleteData, bg="#a0a0ff").pack()
+    Tkinter.Button(root, text="添加学生", width=20, command=addStdnt, bg="#a0a0ff").pack()
+    Tkinter.Button(root, text="学生列表", width=20, command=showStdnt, bg="#a0ffa0").pack()
+    Tkinter.Button(root, text="收作业", width=20, command=collectHomework_t, bg="#ffa0a0").pack()
+    Tkinter.Button(root, text="停止收作业", width=20, command=stopCollect, bg="#ffa0a0").pack()
     Tkinter.Button(root, text="作业统计", width=20, command=showHomework, bg="yellow").pack()
     root.mainloop()
 
